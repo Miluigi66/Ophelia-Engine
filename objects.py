@@ -11,6 +11,7 @@ class Object:
         self.edges = froms[shape]["edges"]
         self.faces = froms[shape]["faces"]
         self.pivot = froms[shape]["pivot"]
+        self.scale(DICT[shape]['scale'])
         self.get_bounding_box()
         self.split_objects_each_faces = list(self.split_object_each_face())
         self.split_objects_smaller_percent = list(self.split_object_smaller_percent())
