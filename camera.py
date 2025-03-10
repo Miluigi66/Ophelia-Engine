@@ -1,4 +1,5 @@
-from main import pygame, sys, math, WIDTH, HEIGHT
+from main import pygame, sys, math
+
 class Cam:
     def __init__(self, pos):
         self.pos = list(pos)
