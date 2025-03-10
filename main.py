@@ -16,7 +16,7 @@ print("DONE!")
 
 # My imports
 import camera
-from objects import DICT, Object, calculate_position
+from objects import DICT
 import main_functions_math
 
 
@@ -54,11 +54,7 @@ def main():
     pygame.mouse.get_rel()
     pygame.mouse.set_visible(0)
     pygame.event.set_grab(1)
-    
-    # Updates the start position of the objects
-    for obj_name, obj in DICT.items():
-        Object.scale(obj['object_class'], obj['scale'])
-        calculate_position(obj['object_class'], 0, 0, 0, *obj['start_pos'])
+
 
     while running:
         start_time = time.time()
