@@ -4,19 +4,15 @@ split_whole_value = .1
 SPLIT_PERCENT = split_whole_value / 100
 class Object:
     # Initialize vertices, edges, and faces
-    def __init__(self, froms, shape):
+    def __init__(self, froms, shape, scale=1):
         self.name = shape
         print("intializing object: " + shape)
         self.vertices = froms[shape]["vertices"]
         self.edges = froms[shape]["edges"]
         self.faces = froms[shape]["faces"]
         self.pivot = froms[shape]["pivot"]
-        self.scale(DICT[shape]['scale'])
-        self.get_bounding_box()
-        self.split_objects_each_faces = list(self.split_object_each_face())
-        self.split_objects_smaller_percent = list(self.split_object_smaller_percent())
+        self.scale(scale)
 
-        
     def __str__(self):
         return f"Object({self.vertices}, {self.edges}, {self.faces}, {self.pivot})"
 
@@ -76,6 +72,8 @@ class Object:
         for i in range(len(self.vertices)):
             self.vertices[i] = (self.vertices[i][0] * scale, self.vertices[i][1] * scale, self.vertices[i][2] * scale)
         self.get_bounding_box()
+        self.split_objects_each_faces = list(self.split_object_each_face())
+        self.split_objects_smaller_percent = list(self.split_object_smaller_percent())
         
     def update_object(self, vertices, edges, faces, pivot):
         self.vertices = vertices
