@@ -1,170 +1,140 @@
-import pygame
-import sys
-import math
-import pygame.gfxdraw
-import numpy as np #MAKES IT SLOWER!!!
-import time
-import cProfile
+from main import MODLES, BOB, generate_model_after
+# % of object to split
+split_whole_value = .1
+SPLIT_PERCENT = split_whole_value / 100
+class Object:
+    # Initialize vertices, edges, and faces
+    def __init__(self, froms, shape, scale=1):
+        self.name = shape
+        print("intializing object: " + shape)
+        self.vertices = froms[shape]["vertices"]
+        self.edges = froms[shape]["edges"]
+        self.faces = froms[shape]["faces"]
+        self.pivot = froms[shape]["pivot"]
+        self.scale(scale)
 
-# models
-print("Importing models.... (Might take a while)")
-from total_modles.model import MODLES
-from total_modles.custom_model import BOB
-from total_modles.random_gen import generate_model_after
-print("DONE!")
-# models
+    def __str__(self):
+        return f"Object({self.vertices}, {self.edges}, {self.faces}, {self.pivot})"
 
-# My imports
-import camera
-from objects import DICT
-import main_functions_math
+    def __repr__(self):
+        return f"Object({self.vertices}, {self.edges}, {self.faces}, {self.pivot})"
 
-
-# Initialize Pygame
-pygame.init()
-
-# Screen dimensions
-WIDTH, HEIGHT = 800, 600
-fullscreen = False
-screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.RESIZABLE)
-pygame.display.set_caption("3D Rendering Engine")
-
-# Colors
-WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
-
-# Darkening effect higher value = less darkening
-DARKENING_FACTOR = 60
-# Rendering distance
-RENDER_DISTANCE_FAR = DARKENING_FACTOR
-RENDER_DISTANCE_BEHIND = 0
-RENDER_DISTANCE_RIGHT = 50
-RENDER_DISTANCE_LEFT = -RENDER_DISTANCE_RIGHT
-
-
-def main():
-    global screen
-    clock = pygame.time.Clock()
+    def get_bounding_box(self):
+        min_x = min(v[0] for v in self.vertices)
+        max_x = max(v[0] for v in self.vertices)
+        min_y = min(v[1] for v in self.vertices)
+        max_y = max(v[1] for v in self.vertices)
+        min_z = min(v[2] for v in self.vertices)
+        max_z = max(v[2] for v in self.vertices)
+        self.bounding_box = (min_x, max_x), (min_y, max_y), (min_z, max_z)
+        return self.bounding_box
     
-    collisions_on = True
-    running = True
-
-    cam = camera.Cam((0, 0, -5))
-    pygame.event.get()
-    pygame.mouse.get_rel()
-    pygame.mouse.set_visible(0)
-    pygame.event.set_grab(1)
-
-
-    while running:
-        start_time = time.time()
-        # Single input
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-            if event.type == pygame.VIDEORESIZE:
-                global WIDTH, HEIGHT
-                WIDTH, HEIGHT = event.size
-                screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.RESIZABLE)
-            cam.mouse_event(event)
+    def split_object_each_face(self):
+        split_objects_each_faces = []
+        for face in self.faces:
+            vertices_indices, color = face
+            vertices = [self.vertices[i] for i in vertices_indices]
+            min_x = min(v[0] for v in vertices)
+            max_x = max(v[0] for v in vertices)
+            min_y = min(v[1] for v in vertices)
+            max_y = max(v[1] for v in vertices)
+            min_z = min(v[2] for v in vertices)
+            max_z = max(v[2] for v in vertices)
+            bounding_box = (min_x, max_x), (min_y, max_y), (min_z, max_z)
+            yield vertices, bounding_box
+            split_objects_each_faces.append((vertices, bounding_box))
+        return split_objects_each_faces
+    
+    # does this work???
+    def split_object_smaller_percent(self):
+        split_objects_each_faces = []
+        num_faces = len(self.faces)
+        split_count = int(num_faces * SPLIT_PERCENT)
+        print(f"Splitting {self.name} into {split_count} smaller objects")
+        for big_face in range(split_count):
+            vertices_indices, color = self.faces[big_face]
+            vertices = [self.vertices[i] for i in vertices_indices]
+            min_x = min(v[0] for v in vertices)
+            max_x = max(v[0] for v in vertices)
+            min_y = min(v[1] for v in vertices)
+            max_y = max(v[1] for v in vertices)
+            min_z = min(v[2] for v in vertices)
+            max_z = max(v[2] for v in vertices)
+            bounding_box = (min_x, max_x), (min_y, max_y), (min_z, max_z)
+            yield vertices, bounding_box
+            split_objects_each_faces.append((vertices, bounding_box))
+        print(f"Each bounding box is: ")
+        for vertices, bounding_box in split_objects_each_faces:
+            print(f"{bounding_box}")
+        return split_objects_each_faces
         
-
-        keys = pygame.key.get_pressed()
-        cam.update(keys)
-
-        """for obj_name, obj in DICT.items():
-            cam.check_collision_with_camera(obj['object_class'])"""
-            
-        screen.fill(BLACK)
-        pygame.draw.rect(screen, (0, 255, 0), (0, HEIGHT // 2, WIDTH, HEIGHT // 2))
-        # Draw blue sky
-        sky_color = (135, 206, 235)  # Light blue color
-        sky_height = int((1 - (1.58 - cam.rot[0]) / 3.16) * HEIGHT)
-        pygame.draw.rect(screen, sky_color, (0, 0, WIDTH, sky_height))
-
-
-        # Get all faces to render
-        func_start_time = time.time()
-        all_vertices, all_faces = main_functions_math.get_all_faces(cam.pos)
-        get_all_faces_time = time.time() - func_start_time
-
-        # Transform vertices based on camera position and rotation
-        func_start_time = time.time()
-        transformed_vertices = cam.transform(all_vertices)
-        transform_time = time.time() - func_start_time
-
-        # Sort faces by dot product with camera's front vector
-        func_start_time = time.time()
-        sorted_faces = main_functions_math.sort_high_to_low(transformed_vertices, all_faces)
-        sort_time = time.time() - func_start_time
+    def scale(self, scale):
+        for i in range(len(self.vertices)):
+            self.vertices[i] = (self.vertices[i][0] * scale, self.vertices[i][1] * scale, self.vertices[i][2] * scale)
+        self.get_bounding_box()
+        self.split_objects_each_faces = list(self.split_object_each_face())
+        self.split_objects_smaller_percent = list(self.split_object_smaller_percent())
         
-        # Calculate aspect ratio
-        aspect_ratio = pygame.display.get_surface().get_width() / pygame.display.get_surface().get_height()
-
-        # Draw all faces
-        func_start_time = time.time()
-        main_functions_math.draw_faces(transformed_vertices, sorted_faces, aspect_ratio)
-        draw_faces_time = time.time() - func_start_time
-
-        end_time = time.time()
-        processing_time = end_time - start_time
-        
-        # Display individual function processing times
-        font = pygame.font.SysFont('Arial', 20)
-        get_all_faces_surface = font.render(f"Get All Faces Time: {get_all_faces_time:.4f} s", False, WHITE)
-        screen.blit(get_all_faces_surface, (0, 90))
-        transform_surface = font.render(f"Transform Time: {transform_time:.4f} s", False, WHITE)
-        screen.blit(transform_surface, (0, 120))
-        sort_surface = font.render(f"Sort Time: {sort_time:.4f} s", False, WHITE)
-        screen.blit(sort_surface, (0, 150))
-        draw_faces_surface = font.render(f"Draw Faces + Textures Time: {draw_faces_time:.4f} s", False, WHITE)
-        screen.blit(draw_faces_surface, (0, 180))
-        
-        
-        # Display processing time
-        font = pygame.font.SysFont('Arial', 30)
-        processing_time_surface = font.render(f"Processing Time: {processing_time:.4f} s", False, WHITE)
-        screen.blit(processing_time_surface, (0, 60))
-
-        # See FPS
-        fps = str(int(clock.get_fps()))
-        font = pygame.font.SysFont('Arial', 30)
-        fpssurface = font.render(fps, False, WHITE)
-        screen.blit(fpssurface, (0, 0))
-
-        # See position
-        pos = str(cam.pos)
-        font = pygame.font.SysFont('Arial', 30)
-        possurface = font.render(pos, False, WHITE)
-        screen.blit(possurface, (0, 30))
-        
-        # Draw small x, y, z axis in the middle of the screen
-        axis_length = 10
-        center_x, center_y = screen.get_width() // 2, screen.get_height() // 2
-
-        # Draw small x, y, z axis in the middle of the screen based on camera rotation
-        axis_length = 10
-        center_x, center_y = screen.get_width() // 2, screen.get_height() // 2
-        # Draw x-axis (red)
-        end_x = center_x + axis_length * math.cos(cam.rot[1])
-        end_y = center_y + axis_length * math.sin(cam.rot[1])
-        pygame.draw.line(screen, (255, 0, 0), (center_x, center_y), (end_x, end_y), 2)
-        # Draw y-axis (green)
-        end_x = center_x
-        end_y = center_y - axis_length
-        pygame.draw.line(screen, (0, 255, 0), (center_x, center_y), (end_x, end_y), 2)
-        # Draw z-axis (blue)
-        end_x = center_x + axis_length * math.sin(cam.rot[1])
-        end_y = center_y - axis_length * math.cos(cam.rot[1])
-        pygame.draw.line(screen, (0, 0, 255), (center_x, center_y), (end_x, end_y), 2)
-
-        
-        pygame.display.flip()
-        #pygame.display.update()
-        clock.tick(60)
-        
-    pygame.quit()
-
-if __name__ == "__main__":
-    #cProfile.run("main()")
-    main()
+    def update_object(self, vertices, edges, faces, pivot):
+        self.vertices = vertices
+        self.edges = edges
+        self.faces = faces
+        self.pivot = pivot
+    
+# Dictionary of objects
+DICT = {
+    'square': {
+        'type': 'player',
+        'object_class': Object(MODLES, 'square'),
+        'render': False,
+        'move': False,
+        'collision': True,
+        'start_pos': (0, 0, 0),
+        'scale': 1
+    },
+    'bulbasaur': {
+        'type': 'player',
+        'object_class': Object(MODLES, 'bulbasaur'),
+        'render': False,
+        'move': False,
+        'collision': False,
+        'start_pos': (-5, 0, 0),
+        'scale': 1
+    },
+    'octahedron': {
+        'type': 'player',
+        'object_class': Object(MODLES, 'octahedron'),
+        'render': False,
+        'move': False,
+        'collision': False,
+        'start_pos': (3, 0, 0),
+        'scale': 1
+    },
+    'mountains': {
+        'type': 'terrain',
+        'object_class': Object(BOB, 'mount'),
+        'render': True,
+        'move': True,
+        'collision': False,
+        'start_pos': (-79, -6, 0),
+        'scale': 1
+    },
+    'mountains2': {
+        'type': 'terrain',
+        'object_class': Object(BOB, 'mount'),
+        'render': True,
+        'move': True,
+        'collision': False,
+        'start_pos': (80, -6, 0),
+        'scale': 1
+    },
+    'gen_modle': {
+        'type': 'terrain',
+        'object_class': Object(generate_model_after, 'hills'),
+        'render': True,
+        'move': True,
+        'collision': True,
+        'start_pos': (0, -2, -150),
+        'scale': 1
+    },
+}
