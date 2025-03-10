@@ -1,3 +1,4 @@
+from main import pygame, sys, math, WIDTH, HEIGHT
 class Cam:
     def __init__(self, pos):
         self.pos = list(pos)
@@ -75,10 +76,6 @@ class Cam:
                 pygame.display.quit
                 screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.RESIZABLE)
                 fullscreen = False
-        if key[pygame.K_p]:
-            for obj_name, obj in DICT.items():
-                print(f"{obj_name} split_objects_each_faces: {len(obj['object_class'].split_objects_each_faces)}")
-                print(f"{obj_name} split_objects_smaller_percent: {len(obj['object_class'].split_objects_smaller_percent)}")
         if key[pygame.K_o]:
             tp_x = int(input("Enter x: "))
             tp_y = int(input("Enter y: "))
