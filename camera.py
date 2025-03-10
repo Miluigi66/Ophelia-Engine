@@ -66,16 +66,6 @@ class Cam:
         if key[pygame.K_ESCAPE]:
             pygame.quit()
             sys.exit()  # Quits Game
-        if key[pygame.K_f]:
-            global fullscreen
-            if not fullscreen:
-                pygame.display.quit
-                screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.FULLSCREEN)
-                fullscreen = True
-            else:
-                pygame.display.quit
-                screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.RESIZABLE)
-                fullscreen = False
         if key[pygame.K_o]:
             tp_x = int(input("Enter x: "))
             tp_y = int(input("Enter y: "))
