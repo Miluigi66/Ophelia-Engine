@@ -1,5 +1,7 @@
-from main import math, pygame, WIDTH, HEIGHT, screen, DICT, DARKENING_FACTOR, RENDER_DISTANCE_FAR, RENDER_DISTANCE_BEHIND, RENDER_DISTANCE_RIGHT, RENDER_DISTANCE_LEFT
-
+import main
+from main import math, pygame, DICT
+from core_vars import WIDTH, HEIGHT, DARKENING_FACTOR, RENDER_DISTANCE_FAR, RENDER_DISTANCE_BEHIND, RENDER_DISTANCE_LEFT, RENDER_DISTANCE_RIGHT
+from main_loop import screen
 def project(x, y, z, scale, distance, aspect_ratio):
     factor = scale / (distance + z)
     x = x * factor * aspect_ratio + WIDTH // 2
@@ -67,7 +69,7 @@ def check_collision(obj1, obj2):
             min_y1 <= max_y2 and max_y1 >= min_y2 and
             min_z1 <= max_z2 and max_z1 >= min_z2)
 
-def texturing(screen, darkened_color, points):
+def texturing(darkened_color, points):
     pygame.gfxdraw.filled_polygon(screen, points, darkened_color)
     
     
@@ -95,7 +97,7 @@ def draw_faces(all_vertices, sorted_faces, aspect_ratio):
         darkened_color = tuple(int(c * darken_factor) for c in color)
         if darkened_color[0] > 0 and darkened_color[1] > 0 and darkened_color[2] > 0:
             try:
-                texturing(screen, darkened_color, points)
+                texturing(darkened_color, points)
             except Exception as e:
                 print(f"Error drawing polygon with points: {points}, error: {e}")
 
