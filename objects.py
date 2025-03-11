@@ -19,6 +19,11 @@ class Object:
     def __repr__(self):
         return f"Object({self.vertices}, {self.edges}, {self.faces}, {self.pivot})"
 
+    def update_bounding_boxs(self):
+        self.get_bounding_box()
+        self.split_objects_each_faces = list(self.split_object_each_face())
+        self.split_objects_smaller_percent = list(self.split_object_smaller_percent())
+        
     def get_bounding_box(self):
         min_x = min(v[0] for v in self.vertices)
         max_x = max(v[0] for v in self.vertices)
@@ -71,15 +76,14 @@ class Object:
     def scale(self, scale):
         for i in range(len(self.vertices)):
             self.vertices[i] = (self.vertices[i][0] * scale, self.vertices[i][1] * scale, self.vertices[i][2] * scale)
-        self.get_bounding_box()
-        self.split_objects_each_faces = list(self.split_object_each_face())
-        self.split_objects_smaller_percent = list(self.split_object_smaller_percent())
+        self.update_bounding_boxs()
         
     def update_object(self, vertices, edges, faces, pivot):
         self.vertices = vertices
         self.edges = edges
         self.faces = faces
         self.pivot = pivot
+        self.update_bounding_boxs()
     
 # Dictionary of objects
 DICT = {
