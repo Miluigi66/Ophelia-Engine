@@ -138,3 +138,9 @@ DICT = {
         'scale': 1
     },
 }
+
+for key, value in DICT.items():
+    obj = value['object_class']
+    start_pos = value['start_pos']
+    updated_vertices = [(v[0] + start_pos[0], v[1] + start_pos[1], v[2] + start_pos[2]) for v in obj.vertices]
+    obj.update_object(updated_vertices, obj.edges, obj.faces, obj.pivot)
