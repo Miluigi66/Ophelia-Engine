@@ -46,11 +46,14 @@ def main_loop():
             cam.check_collision_with_camera(obj['object_class'])"""
             
         screen.fill(BLACK)
-        pygame.draw.rect(screen, (0, 255, 0), (0, HEIGHT // 2, WIDTH, HEIGHT // 2))
         # Draw blue sky
         sky_color = (135, 206, 235)  # Light blue color
         sky_height = int((1 - (1.58 - cam.rot[0]) / 3.16) * HEIGHT)
+        pygame.draw.rect(screen, sky_color, (0, 0, WIDTH, HEIGHT))
         pygame.draw.rect(screen, sky_color, (0, 0, WIDTH, sky_height))
+        # Draw green ground
+        ground_height = HEIGHT - sky_height
+        pygame.draw.rect(screen, (0, 255, 0), (0, sky_height, WIDTH, ground_height))
 
 
         # Get all faces to render
