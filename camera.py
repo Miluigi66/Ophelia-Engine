@@ -1,5 +1,5 @@
 from main import pygame, sys, math
-
+from objects import DICT
 class Cam:
     def __init__(self, pos):
         self.pos = list(pos)
@@ -15,7 +15,13 @@ class Cam:
             self.rot[0] -= y
             self.rot[1] += x
         if event.type == pygame.MOUSEBUTTONDOWN:
-            None
+            if event.button == 1:
+                # Ray casting to determine what the camera is looking at
+                direction = [math.sin(self.rot[1]), -math.sin(self.rot[0]), math.cos(self.rot[1])]
+                for obj in DICT.values():
+                    if obj.intersects_ray(self.pos, direction):
+                        obj.color = (255, 0, 0)  # Change the color of the object to red
+                        break
         if event.type == pygame.MOUSEBUTTONUP:
             None
             
