@@ -19,7 +19,7 @@ class Cam:
                 # Ray casting to determine what the camera is looking at
                 direction = [math.sin(self.rot[1]), -math.sin(self.rot[0]), math.cos(self.rot[1])]
                 for obj in DICT.values():
-                    if obj.intersects_ray(self.pos, direction):
+                    if obj['object_class'].intersects_ray(self.pos, direction):
                         obj.color = (255, 0, 0)  # Change the color of the object to red
                         break
         if event.type == pygame.MOUSEBUTTONUP:
