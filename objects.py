@@ -1,4 +1,5 @@
 from main import MODLES, BOB, generate_model_after
+from core_vars import WHITE
 # % of object to split
 split_whole_value = .1
 SPLIT_PERCENT = split_whole_value / 100
@@ -84,8 +85,17 @@ class Object:
         self.faces = faces
         self.pivot = pivot
         self.update_bounding_boxs()
+        print(f"Updated object: {self.name}")
     
-# Dictionary of objects
+    def intersects_ray(self, ray_origin, ray_direction):
+        for vertices, bounding_box in self.split_objects_each_faces:
+            (min_x, max_x), (min_y, max_y), (min_z, max_z) = bounding_box
+            if (min_x <= ray_origin[0] <= max_x and
+                min_y <= ray_origin[1] <= max_y and
+                min_z <= ray_origin[2] <= max_z):
+                return True
+        return False
+    
 DICT = {
     'square': {
         'type': 'player',
@@ -94,7 +104,8 @@ DICT = {
         'move': False,
         'collision': True,
         'start_pos': (0, 0, 0),
-        'scale': 1
+        'scale': 1,
+        'general_color': WHITE
     },
     'bulbasaur': {
         'type': 'player',
@@ -103,7 +114,8 @@ DICT = {
         'move': False,
         'collision': False,
         'start_pos': (-5, 0, 0),
-        'scale': 1
+        'scale': 1,
+        'general_color': WHITE
     },
     'octahedron': {
         'type': 'player',
@@ -112,7 +124,8 @@ DICT = {
         'move': False,
         'collision': False,
         'start_pos': (3, 0, 0),
-        'scale': 1
+        'scale': 1,
+        'general_color': WHITE
     },
     'mountains': {
         'type': 'terrain',
@@ -121,7 +134,8 @@ DICT = {
         'move': True,
         'collision': False,
         'start_pos': (-79, -6, 0),
-        'scale': 1
+        'scale': 1,
+        'general_color': WHITE
     },
     'mountains2': {
         'type': 'terrain',
@@ -130,7 +144,8 @@ DICT = {
         'move': True,
         'collision': False,
         'start_pos': (80, -6, 0),
-        'scale': 1
+        'scale': 1,
+        'general_color': WHITE
     },
     'gen_modle': {
         'type': 'terrain',
@@ -139,7 +154,8 @@ DICT = {
         'move': True,
         'collision': True,
         'start_pos': (0, -2, -150),
-        'scale': 1
+        'scale': 1,
+        'general_color': WHITE
     },
 }
 
