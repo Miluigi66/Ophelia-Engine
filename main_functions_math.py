@@ -91,7 +91,6 @@ def draw_faces(all_vertices, sorted_faces, aspect_ratio):
     for depth, face in sorted_faces:
         vertices_indices, color = face
         points = [project(all_vertices[i][0], all_vertices[i][1], all_vertices[i][2], 400, 4, aspect_ratio) for i in vertices_indices]
-        
         # Darken the color based on depth
         darken_factor = max(0, min(1, 1 - depth / DARKENING_FACTOR))  # Adjust the divisor to control the darkening effect
         darkened_color = tuple(int(c * darken_factor) for c in color)
