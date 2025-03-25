@@ -96,6 +96,11 @@ class Object:
                 return True
         return False
     
+    def color_change(self, color):
+        for i in range(len(self.faces)):
+            self.faces[i] = (self.faces[i][0], color)
+        self.update_bounding_boxs()
+    
 DICT = {
     'square': {
         'type': 'player',
