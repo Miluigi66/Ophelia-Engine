@@ -20,7 +20,7 @@ class Cam:
                 direction = [math.sin(self.rot[1]), -math.sin(self.rot[0]), math.cos(self.rot[1])]
                 for obj in DICT.values():
                     if obj['object_class'].intersects_ray(self.pos, direction):
-                        obj.color = (255, 0, 0)  # Change the color of the object to red
+                        obj['object_class'].color_change((255, 0, 0))
                         break
         if event.type == pygame.MOUSEBUTTONUP:
             None
