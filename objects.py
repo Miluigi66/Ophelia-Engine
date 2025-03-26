@@ -164,6 +164,22 @@ DICT = {
     },
 }
 
+import quick_import
+quick_import.what_file_type()
+for new_object in quick_import.QUICK_IMPORT_DATA:
+    DICT[new_object] = {
+        'type': 'player',
+        'object_class': Object(quick_import.QUICK_IMPORT_DATA, new_object),
+        'render': True,
+        'move': True,
+        'collision': True,
+        'start_pos': (0, 0, 0),
+        'scale': 1,
+        'general_color': WHITE
+    }
+
+
+
 for key, value in DICT.items():
     obj = value['object_class']
     start_pos = value['start_pos']
