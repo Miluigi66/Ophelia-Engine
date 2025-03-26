@@ -5,6 +5,7 @@ import pygame.gfxdraw
 import numpy as np #MAKES IT SLOWER!!!
 import time
 import cProfile
+import os
 
 # models
 print("Importing models.... (Might take a while)")
@@ -19,7 +20,7 @@ import camera
 from objects import DICT
 import main_functions_math
 import main_loop
-import core_vars 
+import core_vars
 
 
 def main():
@@ -28,3 +29,4 @@ def main():
 if __name__ == "__main__":
     #cProfile.run("main()")
     main()
+    
