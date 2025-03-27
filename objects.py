@@ -135,7 +135,7 @@ DICT = {
     'mountains': {
         'type': 'terrain',
         'object_class': Object(BOB, 'mount'),
-        'render': True,
+        'render': False,
         'move': True,
         'collision': False,
         'start_pos': (-79, -6, 0),
@@ -145,7 +145,7 @@ DICT = {
     'mountains2': {
         'type': 'terrain',
         'object_class': Object(BOB, 'mount'),
-        'render': True,
+        'render': False,
         'move': True,
         'collision': False,
         'start_pos': (80, -6, 0),
@@ -155,7 +155,7 @@ DICT = {
     'gen_modle': {
         'type': 'terrain',
         'object_class': Object(generate_model_after, 'hills'),
-        'render': True,
+        'render': False,
         'move': True,
         'collision': True,
         'start_pos': (0, -2, -150),
@@ -165,6 +165,7 @@ DICT = {
 }
 
 import quick_import
+print("Importing uncompressed modles.... (Might take a while)")
 quick_import.what_file_type()
 for new_object in quick_import.QUICK_IMPORT_DATA:
     DICT[new_object] = {
@@ -177,8 +178,9 @@ for new_object in quick_import.QUICK_IMPORT_DATA:
         'scale': 1,
         'general_color': WHITE
     }
+print("DONE!")
 
-
+print(f"The names of each object are: {DICT.keys()}")
 
 for key, value in DICT.items():
     obj = value['object_class']
