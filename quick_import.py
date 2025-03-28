@@ -15,7 +15,7 @@ def what_file_type():
             
             # Extract vertices and faces
             vertices = mesh_data.vectors.reshape((-1, 3))
-            faces = np.arange(len(vertices)).reshape((-1, 3))
+            faces = np.arange(len(vertices)).reshape((-1, 3),)
             
             general_data_final(vertices, faces, imported_file) 
         elif str(imported_file).endswith(".obj"):
@@ -41,6 +41,6 @@ def general_data_final(vertices, faces, imported_file):
         "pivot": (0, 0, 0),
         "edges": [],
         "faces": [
-            (face.tolist(), (255, 0, 0)) for face in faces
+            (face.tolist(), (255, 255, 255)) for face in faces
         ]
     }
