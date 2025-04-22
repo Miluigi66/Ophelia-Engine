@@ -98,11 +98,14 @@ class Cam:
             y -= self.pos[1]
             z -= self.pos[2]
 
+            z = z + 4
+
             # Rotate around y-axis
             x, z = x * cos_y - z * sin_y, x * sin_y + z * cos_y
 
             # Rotate around x-axis
             y, z = y * cos_x - z * sin_x, y * sin_x + z * cos_x
-
+            
+            
             transformed_vertices.append((x, y, z))
         return transformed_vertices
