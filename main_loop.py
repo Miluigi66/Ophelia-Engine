@@ -2,6 +2,7 @@ from main import pygame, sys, math, time, camera
 from core_vars import WIDTH, HEIGHT, BLACK, WHITE
 import  main_functions_math
 
+
 # the screen supper important 
 screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.RESIZABLE)
 def main_loop():
@@ -40,7 +41,8 @@ def main_loop():
         keys = pygame.key.get_pressed()
         cam.update(keys)
         
-        
+        """if clock % 2 == 0:
+            main_functions_math.calculate_position(DICT['mountains2']['BOB'], 0, 0, .1, 0, 0, 0)"""
         
         """for obj_name, obj in DICT.items():
             cam.check_collision_with_camera(obj['object_class'])"""
@@ -53,7 +55,7 @@ def main_loop():
         pygame.draw.rect(screen, sky_color, (0, 0, WIDTH, sky_height))
         # Draw green ground
         ground_height = HEIGHT - sky_height
-        pygame.draw.rect(screen, (0, 255, 0), (0, sky_height, WIDTH, ground_height))
+        pygame.draw.rect(screen, (0, 0, 0), (0, sky_height, WIDTH, ground_height))
 
 
         # Get all faces to render
