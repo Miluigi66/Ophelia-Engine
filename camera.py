@@ -1,5 +1,5 @@
 from main import pygame, sys, math
-from objects import DICT
+from objects import threeDModles
 class Cam:
     def __init__(self, pos):
         self.pos = list(pos)
@@ -18,7 +18,7 @@ class Cam:
             if event.button == 1:
                 # Ray casting to determine what the camera is looking at
                 direction = [math.sin(self.rot[1]), -math.sin(self.rot[0]), math.cos(self.rot[1])]
-                for obj in DICT.values():
+                for obj in threeDModles.values():
                     if obj['object_class'].intersects_ray(self.pos, direction):
                         obj['object_class'].color_change((255, 0, 0))
                         break
