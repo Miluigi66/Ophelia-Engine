@@ -1,5 +1,5 @@
 import main
-from main import math, pygame, DICT
+from main import math, pygame, threeDModles
 from core_vars import WIDTH, HEIGHT, DARKENING_FACTOR, RENDER_DISTANCE_FAR, RENDER_DISTANCE_BEHIND, RENDER_DISTANCE_LEFT, RENDER_DISTANCE_RIGHT
 from main_loop import screen
 def project(x, y, z, scale, distance, aspect_ratio):
@@ -70,7 +70,7 @@ def check_collision(obj1, obj2):
             min_z1 <= max_z2 and max_z1 >= min_z2)
 
 def texturing(darkened_color, points):
-    pygame.gfxdraw.filled_polygon(screen, points, darkened_color)
+    #pygame.gfxdraw.filled_polygon(screen, points, darkened_color)
     
     
     # draws the bounding boxes
@@ -78,9 +78,9 @@ def texturing(darkened_color, points):
     # Weird half arks
     #pygame.gfxdraw.bezier(screen, points, 2, darkened_color)
     # Connect the dots 
-    #pygame.gfxdraw.circle(screen, points[0][0], points[0][1], 2, WHITE)
+    pygame.gfxdraw.circle(screen, points[0][0], points[0][1], 2, (255, 255, 255))
     # Black outline
-    #pygame.gfxdraw.aapolygon(screen, points, (0, 0, 0))
+    pygame.gfxdraw.aapolygon(screen, points, (255, 255, 255))
     # Color outling
     #pygame.gfxdraw.trigon(screen, points[0][0], points[0][1], points[1][0], points[1][1], points[2][0], points[2][1], darkened_color)
 
@@ -105,7 +105,7 @@ def get_all_faces(cam_pos):
     all_vertices = []
     all_faces = []
     vertex_offset = 0
-    for obj in DICT.values():
+    for obj in threeDModles.values():
         if obj['render']:
             bounding_box = obj['object_class'].bounding_box
             if bounding_box[0][0] - RENDER_DISTANCE_FAR < cam_pos[0] - obj['object_class'].pivot[0] < bounding_box[0][1] + RENDER_DISTANCE_FAR and \
