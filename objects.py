@@ -101,7 +101,7 @@ class Object:
             self.faces[i] = (self.faces[i][0], color)
         self.update_bounding_boxs()
     
-DICT = {
+threeDModles = {
     'square': {
         'type': 'player',
         'object_class': Object(MODLES, 'square'),
@@ -135,7 +135,7 @@ DICT = {
     'mountains': {
         'type': 'terrain',
         'object_class': Object(BOB, 'mount'),
-        'render': False,
+        'render': True,
         'move': True,
         'collision': False,
         'start_pos': (-79, -6, 0),
@@ -145,7 +145,7 @@ DICT = {
     'mountains2': {
         'type': 'terrain',
         'object_class': Object(BOB, 'mount'),
-        'render': False,
+        'render': True,
         'move': True,
         'collision': False,
         'start_pos': (80, -6, 0),
@@ -155,7 +155,7 @@ DICT = {
     'gen_modle': {
         'type': 'terrain',
         'object_class': Object(generate_model_after, 'hills'),
-        'render': False,
+        'render': True,
         'move': True,
         'collision': True,
         'start_pos': (0, -2, -150),
@@ -168,7 +168,7 @@ import quick_import
 print("Importing uncompressed modles.... (Might take a while)")
 quick_import.what_file_type()
 for new_object in quick_import.QUICK_IMPORT_DATA:
-    DICT[new_object] = {
+    threeDModles[new_object] = {
         'type': 'player',
         'object_class': Object(quick_import.QUICK_IMPORT_DATA, new_object),
         'render': True,
@@ -180,9 +180,9 @@ for new_object in quick_import.QUICK_IMPORT_DATA:
     }
 print("DONE!")
 
-print(f"The names of each object are: {DICT.keys()}")
+print(f"The names of each object are: {threeDModles.keys()}")
 
-for key, value in DICT.items():
+for key, value in threeDModles.items():
     obj = value['object_class']
     start_pos = value['start_pos']
     updated_vertices = [(v[0] + start_pos[0], v[1] + start_pos[1], v[2] + start_pos[2]) for v in obj.vertices]
