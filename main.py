@@ -17,7 +17,7 @@ print("DONE!")
 
 # My imports
 import camera
-from objects import DICT
+from objects import threeDModles
 import main_functions_math
 import main_loop
 import core_vars
