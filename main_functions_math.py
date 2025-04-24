@@ -56,7 +56,7 @@ def sort_high_to_low(all_vertices, all_faces):
            RENDER_DISTANCE_BEHIND < max(depths) < RENDER_DISTANCE_FAR and \
            RENDER_DISTANCE_LEFT < all_vertices[vertices_indices[0]][0] < RENDER_DISTANCE_RIGHT:
             sorted_faces.append((avg_depth, face))
-
+        # maybe try all places or try to find out how to not render if the point is behind a point or not seen
     sorted_faces.sort(reverse=True, key=lambda x: x[0])
     return sorted_faces
 
@@ -137,5 +137,14 @@ def get_all_faces(cam_pos):
                             # then says yes appendthem to a list :)
                             # then if that faces is split inbetween two smaller bounding boxes then it will not render the face (unless it works and causes no problem)
                             break
+
+
     
+    # maybe try to seperate the rendering and the colision so colision is immaginary and the render is seprrate so the smaller chunks all have 
+    # it own render 
+    # also maybe move the orginiser from sort to here I need to change the process fo rendering so its quicker than this and i need to do a
+    #flow chart to see how I render 
+    # I also need to fix how i split the objecct so i need to do it in squares in process of x and z not y so it down then up 
+    # and need to fox how stuff looks when i get close I just need to somehow say oh my its goinf to render behind me and in frount ok here:
+    # render the spot it goes to at the bottom of the screen 
     return all_vertices, all_faces
