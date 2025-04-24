@@ -73,7 +73,7 @@ def transfrom_image(image, sides):
     if sides == 4:
         print(f"Still siding aroud")
         # so i need to make this stretch the immage and then give it to pygame todisplay becasue pygame cant do waht i want with an immage or i need more attempst to mess with it 
-
+        # i want to make my own UV-unwrapping
 
 def texturing(darkened_color, points):
     #pygame.gfxdraw.filled_polygon(screen, points, darkened_color)
