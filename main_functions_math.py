@@ -69,6 +69,12 @@ def check_collision(obj1, obj2):
             min_y1 <= max_y2 and max_y1 >= min_y2 and
             min_z1 <= max_z2 and max_z1 >= min_z2)
 
+def transfrom_image(image, sides):
+    if sides == 4:
+        print(f"Still siding aroud")
+        # so i need to make this stretch the immage and then give it to pygame todisplay becasue pygame cant do waht i want with an immage or i need more attempst to mess with it 
+
+
 def texturing(darkened_color, points):
     #pygame.gfxdraw.filled_polygon(screen, points, darkened_color)
     
