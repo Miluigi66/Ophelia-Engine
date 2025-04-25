@@ -62,12 +62,12 @@ def main_loop():
         func_start_time = time.time()
         all_vertices, all_faces = main_functions_math.get_all_faces(cam.pos)
         get_all_faces_time = time.time() - func_start_time
-
+        
         # Transform vertices based on camera position and rotation
         func_start_time = time.time()
         transformed_vertices = cam.transform(all_vertices)
         transform_time = time.time() - func_start_time
-
+        
         # Sort faces by dot product with camera's front vector
         func_start_time = time.time()
         sorted_faces = main_functions_math.sort_high_to_low(transformed_vertices, all_faces)

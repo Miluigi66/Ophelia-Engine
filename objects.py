@@ -105,11 +105,11 @@ threeDModles = {
     'square': {
         'type': 'player',
         'object_class': Object(MODLES, 'square'),
-        'render': False,
-        'move': False,
+        'render': True,
+        'move': True,
         'collision': True,
         'start_pos': (0, 0, 0),
-        'scale': 1,
+        'scale': 3,
         'general_color': WHITE
     },
     'bulbasaur': {
@@ -135,7 +135,7 @@ threeDModles = {
     'mountains': {
         'type': 'terrain',
         'object_class': Object(BOB, 'mount'),
-        'render': True,
+        'render': False,
         'move': True,
         'collision': False,
         'start_pos': (-79, -6, 0),
@@ -145,7 +145,7 @@ threeDModles = {
     'mountains2': {
         'type': 'terrain',
         'object_class': Object(BOB, 'mount'),
-        'render': True,
+        'render': False,
         'move': True,
         'collision': False,
         'start_pos': (80, -6, 0),
@@ -155,7 +155,7 @@ threeDModles = {
     'gen_modle': {
         'type': 'terrain',
         'object_class': Object(generate_model_after, 'hills'),
-        'render': True,
+        'render': False,
         'move': True,
         'collision': True,
         'start_pos': (0, -2, -150),

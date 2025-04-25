@@ -98,7 +98,7 @@ class Cam:
             y -= self.pos[1]
             z -= self.pos[2]
 
-            z = z + 4
+            #z = z + 4
 
             # Rotate around y-axis
             x, z = x * cos_y - z * sin_y, x * sin_y + z * cos_y

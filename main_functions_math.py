@@ -51,11 +51,17 @@ def sort_high_to_low(all_vertices, all_faces):
         vertices_indices = face[0]
         depths = [all_vertices[index][2] for index in vertices_indices]
         avg_depth = sum(depths) / len(vertices_indices)
-
-        if RENDER_DISTANCE_BEHIND < min(depths) < RENDER_DISTANCE_FAR and \
-           RENDER_DISTANCE_BEHIND < max(depths) < RENDER_DISTANCE_FAR and \
-           RENDER_DISTANCE_LEFT < all_vertices[vertices_indices[0]][0] < RENDER_DISTANCE_RIGHT:
+        min_depth = min(depths)
+        max_depth = max(depths)
+        
+        if RENDER_DISTANCE_BEHIND <= min_depth <= RENDER_DISTANCE_FAR and \
+           RENDER_DISTANCE_BEHIND <= max_depth <= RENDER_DISTANCE_FAR and \
+           RENDER_DISTANCE_LEFT <= all_vertices[vertices_indices[0]][0] <= RENDER_DISTANCE_RIGHT:
             sorted_faces.append((avg_depth, face))
+        if min_depth <= RENDER_DISTANCE_BEHIND <= max_depth <= RENDER_DISTANCE_FAR and \
+           RENDER_DISTANCE_LEFT <= all_vertices[vertices_indices[0]][0] <= RENDER_DISTANCE_RIGHT:
+            sorted_faces.append((avg_depth, face))
+            
         # maybe try all places or try to find out how to not render if the point is behind a point or not seen
     sorted_faces.sort(reverse=True, key=lambda x: x[0])
     return sorted_faces
@@ -69,24 +75,33 @@ def check_collision(obj1, obj2):
             min_y1 <= max_y2 and max_y1 >= min_y2 and
             min_z1 <= max_z2 and max_z1 >= min_z2)
 
-def transfrom_image(image, sides):
+def transfrom_image(points, sides):
     if sides == 4:
-        print(f"Still siding aroud")
-        # so i need to make this stretch the immage and then give it to pygame todisplay becasue pygame cant do waht i want with an immage or i need more attempst to mess with it 
-        # i want to make my own UV-unwrapping
+        image = pygame.image.load("man.jpg")
+        # Calculate the width and height based on the points
+        new_width = max(points[0][0] - points[1][0], points[1][0] - points[0][0], points[2][0] - points[3][0], points[3][0] - points[2][0])
+        new_height = max(points[0][1] - points[3][1], points[3][1] - points[0][1], points[1][1] - points[2][1], points[2][1] - points[1][1])
+        image = pygame.transform.scale(image, (new_width, new_height))
+        
+        # Calculate the top-left corner for positioning the image
+        min_x = min(points[0][0], points[1][0], points[2][0], points[3][0])
+        min_y = min(points[0][1], points[1][1], points[2][1], points[3][1])
+        
+        # Blit the image onto the screen at the calculated position
+        screen.blit(image, (min_x, min_y))
 
 def texturing(darkened_color, points):
-    #pygame.gfxdraw.filled_polygon(screen, points, darkened_color)
-    
+    pygame.gfxdraw.filled_polygon(screen, points, darkened_color)
+    transfrom_image(points, len(points))
     
     # draws the bounding boxes
     
     # Weird half arks
     #pygame.gfxdraw.bezier(screen, points, 2, darkened_color)
     # Connect the dots 
-    pygame.gfxdraw.circle(screen, points[0][0], points[0][1], 2, (255, 255, 255))
+    ##pygame.gfxdraw.circle(screen, points[0][0], points[0][1], 2, (255, 255, 255))
     # Black outline
-    pygame.gfxdraw.aapolygon(screen, points, (255, 255, 255))
+    ##pygame.gfxdraw.aapolygon(screen, points, (255, 255, 255))
     # Color outling
     #pygame.gfxdraw.trigon(screen, points[0][0], points[0][1], points[1][0], points[1][1], points[2][0], points[2][1], darkened_color)
 
@@ -100,7 +115,7 @@ def draw_faces(all_vertices, sorted_faces, aspect_ratio):
         # Darken the color based on depth
         darken_factor = max(0, min(1, 1 - depth / DARKENING_FACTOR))  # Adjust the divisor to control the darkening effect
         darkened_color = tuple(int(c * darken_factor) for c in color)
-        if darkened_color[0] > 0 and darkened_color[1] > 0 and darkened_color[2] > 0:
+        if darkened_color[0] >= 0 and darkened_color[1] >= 0 and darkened_color[2] >= 0:
             try:
                 texturing(darkened_color, points)
             except Exception as e:
