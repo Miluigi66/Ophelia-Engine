@@ -5,21 +5,48 @@ split_whole_value = .1
 SPLIT_PERCENT = split_whole_value / 100
 class Object:
     # Initialize vertices, edges, and faces
-    def __init__(self, froms, shape, scale=1):
-        self.name = shape
+    def __init__(self, froms, shape, type, image=None, scale=1):
+        self.name = type
+        self.vars_to_null
         print("intializing object: " + shape)
-        self.vertices = froms[shape]["vertices"]
-        self.edges = froms[shape]["edges"]
-        self.faces = froms[shape]["faces"]
-        self.pivot = froms[shape]["pivot"]
-        self.scale(scale)
-
+        if self.name[:3] == "ob:":
+            self.vertices = froms[shape]["vertices"]
+            self.edges = froms[shape]["edges"]
+            self.faces = froms[shape]["faces"]
+            self.pivot = froms[shape]["pivot"]
+            self.scale(scale)
+        elif self.name[:3] == "im:":
+            #(x,y, z)
+            #y is up and down
+            self.vertices = [
+                (0, 0, 0),
+                (1, 0, 0),
+                (1, -1, 0),
+                (0, -1, 0)
+            ]
+            self.edges = []
+            self.faces = [
+                ((0, 1, 2, 3), (255, 255, 255), (image, ("all"))),
+            ]
+            self.image = image
+            self.pivot = (0, 0, 0)
+            self.scale(scale)
+        else:
+            print(f"{self.name} is not a valid object name")
+            
     def __str__(self):
         return f"Object({self.vertices}, {self.edges}, {self.faces}, {self.pivot})"
 
     def __repr__(self):
         return f"Object({self.vertices}, {self.edges}, {self.faces}, {self.pivot})"
 
+    def vars_to_null(self):
+        self.vertices = []
+        self.edges = []
+        self.faces = []
+        self.pivot = (0, 0, 0)
+        self.bounding_box = []
+    
     def update_bounding_boxs(self):
         self.get_bounding_box()
         self.split_objects_each_faces = list(self.split_object_each_face())
@@ -38,7 +65,7 @@ class Object:
     def split_object_each_face(self):
         split_objects_each_faces = []
         for face in self.faces:
-            vertices_indices, color = face
+            vertices_indices = face[0]
             vertices = [self.vertices[i] for i in vertices_indices]
             min_x = min(v[0] for v in vertices)
             max_x = max(v[0] for v in vertices)
@@ -103,18 +130,18 @@ class Object:
     
 threeDModles = {
     'square': {
-        'type': 'player',
-        'object_class': Object(MODLES, 'square'),
-        'render': True,
-        'move': True,
-        'collision': True,
+        'type': 'ob:player',
+        'object_class': Object(MODLES, 'square', "ob:player"),
+        'render': False,
+        'move': False,
+        'collision': False,
         'start_pos': (0, 0, 0),
         'scale': 3,
         'general_color': WHITE
     },
     'bulbasaur': {
-        'type': 'player',
-        'object_class': Object(MODLES, 'bulbasaur'),
+        'type': 'ob:player',
+        'object_class': Object(MODLES, 'bulbasaur', 'ob:player'),
         'render': False,
         'move': False,
         'collision': False,
@@ -123,8 +150,8 @@ threeDModles = {
         'general_color': WHITE
     },
     'octahedron': {
-        'type': 'player',
-        'object_class': Object(MODLES, 'octahedron'),
+        'type': 'ob:player',
+        'object_class': Object(MODLES, 'octahedron', 'ob:player'),
         'render': False,
         'move': False,
         'collision': False,
@@ -133,8 +160,8 @@ threeDModles = {
         'general_color': WHITE
     },
     'mountains': {
-        'type': 'terrain',
-        'object_class': Object(BOB, 'mount'),
+        'type': 'ob:terrain',
+        'object_class': Object(BOB, 'mount', 'ob:terrain'),
         'render': False,
         'move': True,
         'collision': False,
@@ -143,8 +170,8 @@ threeDModles = {
         'general_color': WHITE
     },
     'mountains2': {
-        'type': 'terrain',
-        'object_class': Object(BOB, 'mount'),
+        'type': 'ob:terrain',
+        'object_class': Object(BOB, 'mount', 'ob:terrain'),
         'render': False,
         'move': True,
         'collision': False,
@@ -153,12 +180,22 @@ threeDModles = {
         'general_color': WHITE
     },
     'gen_modle': {
-        'type': 'terrain',
-        'object_class': Object(generate_model_after, 'hills'),
+        'type': 'ob:terrain',
+        'object_class': Object(generate_model_after, 'hills', 'ob:terrain'),
         'render': False,
         'move': True,
         'collision': True,
         'start_pos': (0, -2, -150),
+        'scale': 1,
+        'general_color': WHITE
+    },
+    'try_image': {
+        'type': 'im:player',
+        'object_class': Object("man.jpg", 'try_image', 'im:player', "man.jpg"),
+        'render': True,
+        'move': True,
+        'collision': False,
+        'start_pos': (0, 0, 0),
         'scale': 1,
         'general_color': WHITE
     },
@@ -183,7 +220,12 @@ print("DONE!")
 print(f"The names of each object are: {threeDModles.keys()}")
 
 for key, value in threeDModles.items():
-    obj = value['object_class']
-    start_pos = value['start_pos']
-    updated_vertices = [(v[0] + start_pos[0], v[1] + start_pos[1], v[2] + start_pos[2]) for v in obj.vertices]
-    obj.update_object(updated_vertices, obj.edges, obj.faces, obj.pivot)
+    if value['type'][:3] == "ob:":
+        obj = value['object_class']
+        start_pos = value['start_pos']
+        updated_vertices = [(v[0] + start_pos[0], v[1] + start_pos[1], v[2] + start_pos[2]) for v in obj.vertices]
+        obj.update_object(updated_vertices, obj.edges, obj.faces, obj.pivot)
+    elif value['type'][:3] == "im:":
+        print()
+    else:
+        print(f"{value['type']} is not a valid object type")

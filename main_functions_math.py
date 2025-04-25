@@ -92,7 +92,7 @@ def transfrom_image(points, sides):
 
 def texturing(darkened_color, points):
     pygame.gfxdraw.filled_polygon(screen, points, darkened_color)
-    transfrom_image(points, len(points))
+    #transfrom_image(points, len(points))
     
     # draws the bounding boxes
     
@@ -110,7 +110,7 @@ def texturing(darkened_color, points):
 
 def draw_faces(all_vertices, sorted_faces, aspect_ratio):
     for depth, face in sorted_faces:
-        vertices_indices, color = face
+        vertices_indices, color = face[0], face[1]
         points = [project(all_vertices[i][0], all_vertices[i][1], all_vertices[i][2], 400, 4, aspect_ratio) for i in vertices_indices]
         # Darken the color based on depth
         darken_factor = max(0, min(1, 1 - depth / DARKENING_FACTOR))  # Adjust the divisor to control the darkening effect
@@ -137,9 +137,12 @@ def get_all_faces(cam_pos):
                     vertices = obj_class.vertices
                     all_vertices.extend(vertices)
                     for face in obj['object_class'].faces:
-                        vertices_indices, color = face
+                        vertices_indices, color = face[0], face[1]
                         adjusted_indices = [index + vertex_offset for index in vertices_indices]
-                        all_faces.append((adjusted_indices, color))
+                        try:
+                            all_faces.append((adjusted_indices, color, face[2]))
+                        except Exception as e:
+                            all_faces.append((adjusted_indices, color))
                     vertex_offset += len(vertices)
                 else:
                     smaller_bounding_boxes = obj['object_class'].split_objects_smaller_percent
