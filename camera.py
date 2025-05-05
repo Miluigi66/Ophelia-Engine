@@ -23,9 +23,10 @@ class Cam:
                         obj['object_class'].color_change((255, 0, 0))
                         break
         if event.type == pygame.MOUSEBUTTONUP:
-            None
-            
+            None     
+    
     def update(self, key):
+                
         if key[pygame.K_LSHIFT]:
             s = .5
         else:

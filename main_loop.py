@@ -1,7 +1,7 @@
 from main import pygame, sys, math, time, camera
 from core_vars import WIDTH, HEIGHT, BLACK, WHITE
 import  main_functions_math
-
+from objects import threeDModles
 
 # the screen supper important 
 screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.RESIZABLE)
@@ -37,7 +37,12 @@ def main_loop():
                 running = False
             if event.type == pygame.MOUSEMOTION or event.type == pygame.MOUSEBUTTONDOWN or event.type == pygame.MOUSEBUTTONUP:
                 cam.mouse_event(event)
-                
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_0:
+                    for obj in threeDModles.values():
+                        if obj['type'] == 'ob:terrain':
+                            obj['render'] = not obj['render']   
+            
         keys = pygame.key.get_pressed()
         cam.update(keys)
         

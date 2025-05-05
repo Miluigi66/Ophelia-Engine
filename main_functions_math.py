@@ -58,9 +58,6 @@ def sort_high_to_low(all_vertices, all_faces):
            RENDER_DISTANCE_BEHIND <= max_depth <= RENDER_DISTANCE_FAR and \
            RENDER_DISTANCE_LEFT <= all_vertices[vertices_indices[0]][0] <= RENDER_DISTANCE_RIGHT:
             sorted_faces.append((avg_depth, face))
-        if min_depth <= RENDER_DISTANCE_BEHIND <= max_depth <= RENDER_DISTANCE_FAR and \
-           RENDER_DISTANCE_LEFT <= all_vertices[vertices_indices[0]][0] <= RENDER_DISTANCE_RIGHT:
-            sorted_faces.append((avg_depth, face))
             
         # maybe try all places or try to find out how to not render if the point is behind a point or not seen
     sorted_faces.sort(reverse=True, key=lambda x: x[0])
