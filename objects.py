@@ -96,7 +96,7 @@ class Object:
             bounding_box = (min_x, max_x), (min_y, max_y), (min_z, max_z)
             yield vertices, bounding_box
             split_objects_each_faces.append((vertices, bounding_box))
-        print(f"Each bounding box is: ")
+        #print(f"Each bounding box is: ")
         for vertices, bounding_box in split_objects_each_faces:
             print(f"{bounding_box}")
         return split_objects_each_faces

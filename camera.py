@@ -29,6 +29,8 @@ class Cam:
                 
         if key[pygame.K_LSHIFT]:
             s = .5
+        elif key[pygame.K_LCTRL]:
+            s = .01
         else:
             s = .1
         # Camera movement z
