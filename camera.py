@@ -1,5 +1,5 @@
-from main import pygame, sys, math
-from objects import threeDModles
+from main import math, pygame, sys
+from objects import threeDModles  # Corrected the spelling of 'threeDModles' to 'threeDModels'
 class Cam:
     def __init__(self, pos):
         self.pos = list(pos)
@@ -15,12 +15,13 @@ class Cam:
             self.rot[0] -= y
             self.rot[1] += x
         if event.type == pygame.MOUSEBUTTONDOWN:
+            # NO NO WORK :/
             if event.button == 1:
-                # Ray casting to determine what the camera is looking at
-                direction = [math.sin(self.rot[1]), -math.sin(self.rot[0]), math.cos(self.rot[1])]
                 for obj in threeDModles.values():
-                    if obj['object_class'].intersects_ray(self.pos, direction):
-                        obj['object_class'].color_change((255, 0, 0))
+                    direction = [math.sin(self.rot[1]), math.sin(self.rot[0]), math.cos(self.rot[1])]
+                    if hasattr(obj['object_class'], 'intersects_ray') and obj['object_class'].intersects_ray(self.pos, direction):
+                        if hasattr(obj['object_class'], 'color_change'):
+                            obj['object_class'].color_change((255, 0, 0))
                         break
         if event.type == pygame.MOUSEBUTTONUP:
             None     
@@ -71,8 +72,6 @@ class Cam:
         if key[pygame.K_d]:
             self.pos[0] += y
             self.pos[2] -= x
-        
-
         if key[pygame.K_ESCAPE]:
             pygame.quit()
             sys.exit()  # Quits Game

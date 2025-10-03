@@ -89,7 +89,7 @@ def transfrom_image(points, sides):
 
 def texturing(darkened_color, points):
     pygame.gfxdraw.filled_polygon(screen, points, darkened_color)
-    transfrom_image(points, len(points))
+    #transfrom_image(points, len(points))
     
     # draws the bounding boxes
     

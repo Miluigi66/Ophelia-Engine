@@ -1,7 +1,7 @@
 from main import MODLES, BOB, generate_model_after
 from core_vars import WHITE
 # % of object to split
-split_whole_value = .1
+split_whole_value = 1
 SPLIT_PERCENT = split_whole_value / 100
 class Object:
     # Initialize vertices, edges, and faces
@@ -131,12 +131,12 @@ class Object:
 threeDModles = {
     'square': {
         'type': 'ob:player',
-        'object_class': Object(MODLES, 'square', "ob:player"),
-        'render': False,
+        'object_class': Object(MODLES, 'square', "ob:player", None, 10),
+        'render': True,
         'move': False,
         'collision': False,
         'start_pos': (0, 0, 0),
-        'scale': 3,
+        'scale': 10,
         'general_color': WHITE
     },
     'bulbasaur': {
@@ -180,8 +180,8 @@ threeDModles = {
         'general_color': WHITE
     },
     'gen_modle': {
-        'type': 'ob:terrain',
-        'object_class': Object(generate_model_after, 'hills', 'ob:terrain'),
+        'type': 'ob:genmodle',
+        'object_class': Object(generate_model_after, 'hills', 'ob:gnmodle'),
         'render': False,
         'move': True,
         'collision': True,

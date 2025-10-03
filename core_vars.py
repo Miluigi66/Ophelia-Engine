@@ -1,5 +1,5 @@
 # Screen dimensions
-WIDTH, HEIGHT = 800, 600
+WIDTH, HEIGHT = 800 * 2, 600 * 2
 # Colors
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
