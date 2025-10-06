@@ -1,8 +1,6 @@
 from main import MODLES, BOB, generate_model_after
-from core_vars import WHITE
-# % of object to split
-split_whole_value = 1
-SPLIT_PERCENT = split_whole_value / 100
+from core_vars import WHITE, SPLIT_PERCENT
+
 class Object:
     # Initialize vertices, edges, and faces
     def __init__(self, froms, shape, type, image=None, scale=1):

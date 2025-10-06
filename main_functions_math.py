@@ -126,6 +126,7 @@ def get_all_faces(cam_pos):
     for obj in threeDModles.values():
         if obj['render']:
             bounding_box = obj['object_class'].bounding_box
+            # Check if the object's bounding box is within the render distance
             if bounding_box[0][0] - RENDER_DISTANCE_FAR < cam_pos[0] - obj['object_class'].pivot[0] < bounding_box[0][1] + RENDER_DISTANCE_FAR and \
                bounding_box[2][0] - abs(RENDER_DISTANCE_LEFT) < cam_pos[2] - obj['object_class'].pivot[2] < bounding_box[2][1] + RENDER_DISTANCE_RIGHT:
                 if normal_render:
@@ -138,7 +139,7 @@ def get_all_faces(cam_pos):
                         adjusted_indices = [index + vertex_offset for index in vertices_indices]
                         try:
                             all_faces.append((adjusted_indices, color, face[2]))
-                        except Exception as e:
+                        except Exception as _:
                             all_faces.append((adjusted_indices, color))
                     vertex_offset += len(vertices)
                 else:

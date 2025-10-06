@@ -10,10 +10,9 @@ def main_loop():
     # Initialize Pygame
     pygame.init()
 
-
     fullscreen = False
-    
-    pygame.display.set_caption("3D Rendering Engine")
+
+    pygame.display.set_caption("Ophelia Engine")
 
 
     clock = pygame.time.Clock()
@@ -106,10 +105,34 @@ def main_loop():
         processing_time_surface = font.render(f"Processing Time: {processing_time:.4f} s", False, WHITE)
         screen.blit(processing_time_surface, (0, 60))
 
+        # Display total number of faces
+        font = pygame.font.SysFont('Arial', 20)
+        total_faces_surface = font.render(f"Total Faces: {len(all_faces)}", False, WHITE)
+        screen.blit(total_faces_surface, (0, 240))
+        
+        # Display total number of faces being rendered
+        font = pygame.font.SysFont('Arial', 20)
+        total_faces_rendered_surface = font.render(f"Total Faces Rendered: {len(sorted_faces)}", False, WHITE)
+        screen.blit(total_faces_rendered_surface, (0, 270))
+
+        # Display what is taking the most time
+        max_time = max(get_all_faces_time, transform_time, sort_time, draw_faces_time)
+        if max_time == get_all_faces_time:
+            bottleneck = "Get All Faces"
+        elif max_time == transform_time:
+            bottleneck = "Transform"
+        elif max_time == sort_time:
+            bottleneck = "Sort"
+        else:
+            bottleneck = "Draw Faces + Textures"
+        font = pygame.font.SysFont('Arial', 20)
+        bottleneck_surface = font.render(f"Bottleneck: {bottleneck} ({max_time:.4f} s)", False, WHITE)
+        screen.blit(bottleneck_surface, (0, 210))
+        
         # See FPS
         fps = str(int(clock.get_fps()))
         font = pygame.font.SysFont('Arial', 30)
-        fpssurface = font.render(fps, False, WHITE)
+        fpssurface = font.render(f"FPS: {fps}", False, WHITE)
         screen.blit(fpssurface, (0, 0))
 
         # See position
@@ -139,6 +162,6 @@ def main_loop():
         pygame.draw.line(screen, (0, 0, 255), (center_x, center_y), (end_x, end_y), 2)
 
         
-        pygame.display.flip()
-        #pygame.display.update()
+        #pygame.display.flip()
+        pygame.display.update()
         clock.tick(60)
