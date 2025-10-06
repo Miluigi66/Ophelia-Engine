@@ -3,20 +3,22 @@ from core_vars import WIDTH, HEIGHT, BLACK, WHITE
 import  main_functions_math
 from objects import threeDModles
 
-# the screen supper important 
-screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.RESIZABLE)
+# Initialize Pygame
+pygame.init()
+
+# The screen
+screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.RESIZABLE, pygame.SCALED)
+pygame.display.set_caption("Ophelia Engine")
+#TRY THIS MAYBE to make icon :)
+#pygame.display.set_icon(pygame.image.load(os.path.join("total_modles", "icon.png")))
+
+# Preload fonts to avoid recreating them in the loop
+font_small = pygame.font.SysFont('Arial', 20)
+font_large = pygame.font.SysFont('Arial', 30)
+
 def main_loop():
-    
-    # Initialize Pygame
-    pygame.init()
-
     fullscreen = False
-
-    pygame.display.set_caption("Ophelia Engine")
-
-
     clock = pygame.time.Clock()
-
     collisions_on = True
     running = True
 
@@ -26,11 +28,9 @@ def main_loop():
     pygame.mouse.set_visible(0)
     pygame.event.set_grab(1)
     
-    
-    
     while running:
         start_time = time.time()
-        # Single input
+        # Handle events
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -41,7 +41,8 @@ def main_loop():
                     for obj in threeDModles.values():
                         if obj['type'] == 'ob:terrain':
                             obj['render'] = not obj['render']   
-            
+        
+        # Update camera
         keys = pygame.key.get_pressed()
         cam.update(keys)
         
@@ -50,17 +51,15 @@ def main_loop():
         
         """for obj_name, obj in DICT.items():
             cam.check_collision_with_camera(obj['object_class'])"""
-            
+        
+        # Clear screen
         screen.fill(BLACK)
-        # Draw blue sky
-        sky_color = (135, 206, 235)  # Light blue color
+        
+        # Draw blue sky and ground
+        sky_color = (135, 206, 235)  # Light blue
         sky_height = int((1 - (1.58 - cam.rot[0]) / 3.16) * HEIGHT)
-        pygame.draw.rect(screen, sky_color, (0, 0, WIDTH, HEIGHT))
         pygame.draw.rect(screen, sky_color, (0, 0, WIDTH, sky_height))
-        # Draw green ground
-        ground_height = HEIGHT - sky_height
-        pygame.draw.rect(screen, (0, 0, 0), (0, sky_height, WIDTH, ground_height))
-
+        pygame.draw.rect(screen, (0, 0, 0), (0, sky_height, WIDTH, HEIGHT - sky_height))
 
         # Get all faces to render
         func_start_time = time.time()
@@ -88,80 +87,39 @@ def main_loop():
         end_time = time.time()
         processing_time = end_time - start_time
         
-        # Display individual function processing times
-        font = pygame.font.SysFont('Arial', 20)
-        get_all_faces_surface = font.render(f"Get All Faces Time: {get_all_faces_time:.4f} s", False, WHITE)
-        screen.blit(get_all_faces_surface, (0, 90))
-        transform_surface = font.render(f"Transform Time: {transform_time:.4f} s", False, WHITE)
-        screen.blit(transform_surface, (0, 120))
-        sort_surface = font.render(f"Sort Time: {sort_time:.4f} s", False, WHITE)
-        screen.blit(sort_surface, (0, 150))
-        draw_faces_surface = font.render(f"Draw Faces + Textures Time: {draw_faces_time:.4f} s", False, WHITE)
-        screen.blit(draw_faces_surface, (0, 180))
-        
-        
-        # Display processing time
-        font = pygame.font.SysFont('Arial', 30)
-        processing_time_surface = font.render(f"Processing Time: {processing_time:.4f} s", False, WHITE)
-        screen.blit(processing_time_surface, (0, 60))
-
-        # Display total number of faces
-        font = pygame.font.SysFont('Arial', 20)
-        total_faces_surface = font.render(f"Total Faces: {len(all_faces)}", False, WHITE)
-        screen.blit(total_faces_surface, (0, 240))
-        
-        # Display total number of faces being rendered
-        font = pygame.font.SysFont('Arial', 20)
-        total_faces_rendered_surface = font.render(f"Total Faces Rendered: {len(sorted_faces)}", False, WHITE)
-        screen.blit(total_faces_rendered_surface, (0, 270))
-
-        # Display what is taking the most time
+        # Display performance metrics
+        processing_time = time.time() - start_time
+        metrics = [
+            (f"FPS: {int(clock.get_fps())}", 0, 0),
+            (f"Position: {cam.pos}", 0, 30),
+            (f"Processing Time: {processing_time:.4f} s", 0, 60),
+            (f"Get All Faces Time: {get_all_faces_time:.4f} s", 0, 90),
+            (f"Transform Time: {transform_time:.4f} s", 0, 120),
+            (f"Sort Time: {sort_time:.4f} s", 0, 150),
+            (f"Draw Faces Time: {draw_faces_time:.4f} s", 0, 180),
+            (f"Total Faces: {len(all_faces)}", 0, 240),
+            (f"Total Faces Rendered: {len(sorted_faces)}", 0, 270),
+        ]
         max_time = max(get_all_faces_time, transform_time, sort_time, draw_faces_time)
-        if max_time == get_all_faces_time:
-            bottleneck = "Get All Faces"
-        elif max_time == transform_time:
-            bottleneck = "Transform"
-        elif max_time == sort_time:
-            bottleneck = "Sort"
-        else:
-            bottleneck = "Draw Faces + Textures"
-        font = pygame.font.SysFont('Arial', 20)
-        bottleneck_surface = font.render(f"Bottleneck: {bottleneck} ({max_time:.4f} s)", False, WHITE)
-        screen.blit(bottleneck_surface, (0, 210))
+        bottleneck = ["Get All Faces", "Transform", "Sort", "Draw Faces + Textures"][
+            [get_all_faces_time, transform_time, sort_time, draw_faces_time].index(max_time)
+        ]
+        metrics.append((f"Bottleneck: {bottleneck} ({max_time:.4f} s)", 0, 210))
         
-        # See FPS
-        fps = str(int(clock.get_fps()))
-        font = pygame.font.SysFont('Arial', 30)
-        fpssurface = font.render(f"FPS: {fps}", False, WHITE)
-        screen.blit(fpssurface, (0, 0))
+        for text, x, y in metrics:
+            surface = font_small.render(text, False, WHITE)
+            screen.blit(surface, (x, y))
 
-        # See position
-        pos = str(cam.pos)
-        font = pygame.font.SysFont('Arial', 30)
-        possurface = font.render(pos, False, WHITE)
-        screen.blit(possurface, (0, 30))
-        
-        # Draw small x, y, z axis in the middle of the screen
-        axis_length = 10
+        # Draw axes
         center_x, center_y = screen.get_width() // 2, screen.get_height() // 2
-
-        # Draw small x, y, z axis in the middle of the screen based on camera rotation
         axis_length = 10
-        center_x, center_y = screen.get_width() // 2, screen.get_height() // 2
-        # Draw x-axis (red)
-        end_x = center_x + axis_length * math.cos(cam.rot[1])
-        end_y = center_y + axis_length * math.sin(cam.rot[1])
-        pygame.draw.line(screen, (255, 0, 0), (center_x, center_y), (end_x, end_y), 2)
-        # Draw y-axis (green)
-        end_x = center_x
-        end_y = center_y - axis_length
-        pygame.draw.line(screen, (0, 255, 0), (center_x, center_y), (end_x, end_y), 2)
-        # Draw z-axis (blue)
-        end_x = center_x + axis_length * math.sin(cam.rot[1])
-        end_y = center_y - axis_length * math.cos(cam.rot[1])
-        pygame.draw.line(screen, (0, 0, 255), (center_x, center_y), (end_x, end_y), 2)
+        pygame.draw.line(screen, (255, 0, 0), (center_x, center_y),
+                         (center_x + axis_length * math.cos(cam.rot[1]), center_y + axis_length * math.sin(cam.rot[1])), 2)
+        pygame.draw.line(screen, (0, 255, 0), (center_x, center_y), (center_x, center_y - axis_length), 2)
+        pygame.draw.line(screen, (0, 0, 255), (center_x, center_y),
+                         (center_x + axis_length * math.sin(cam.rot[1]), center_y - axis_length * math.cos(cam.rot[1])), 2)
 
-        
+        # Update display
         #pygame.display.flip()
         pygame.display.update()
         clock.tick(60)
