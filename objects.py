@@ -77,6 +77,10 @@ class Object:
         return split_objects_each_faces
     
     # does this work???
+        """
+        So ummm this function does spit it but it renders the same amount of faces
+        but it could be because the normal_render is on in main_functions_math.py
+        """
     def split_object_smaller_percent(self):
         split_objects_each_faces = []
         num_faces = len(self.faces)
