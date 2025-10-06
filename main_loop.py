@@ -22,7 +22,11 @@ def main_loop():
     collisions_on = True
     running = True
 
-    cam = camera.Cam((0, 0, -5))
+    cam = camera.Cam((0, 0, 0))
+    # ALL WHEN FACING DEGREE (_,0,_)
+    # x = left and right
+    # y = up and down
+    # z = front and back
     pygame.event.get()
     pygame.mouse.get_rel()
     pygame.mouse.set_visible(0)
@@ -92,13 +96,14 @@ def main_loop():
         metrics = [
             (f"FPS: {int(clock.get_fps())}", 0, 0),
             (f"Position: {cam.pos}", 0, 30),
-            (f"Processing Time: {processing_time:.4f} s", 0, 60),
-            (f"Get All Faces Time: {get_all_faces_time:.4f} s", 0, 90),
-            (f"Transform Time: {transform_time:.4f} s", 0, 120),
-            (f"Sort Time: {sort_time:.4f} s", 0, 150),
-            (f"Draw Faces Time: {draw_faces_time:.4f} s", 0, 180),
-            (f"Total Faces: {len(all_faces)}", 0, 240),
-            (f"Total Faces Rendered: {len(sorted_faces)}", 0, 270),
+            (f"Rotation: {tuple(round(math.degrees(angle), 2) for angle in cam.rot)}", 0, 60),
+            (f"Processing Time: {processing_time:.4f} s", 0, 90),
+            (f"Get All Faces Time: {get_all_faces_time:.4f} s", 0, 120),
+            (f"Transform Time: {transform_time:.4f} s", 0, 150),
+            (f"Sort Time: {sort_time:.4f} s", 0, 180),
+            (f"Draw Faces Time: {draw_faces_time:.4f} s", 0, 240),
+            (f"Total Faces: {len(all_faces)}", 0, 270),
+            (f"Total Faces Rendered: {len(sorted_faces)}", 0, 300),
         ]
         max_time = max(get_all_faces_time, transform_time, sort_time, draw_faces_time)
         bottleneck = ["Get All Faces", "Transform", "Sort", "Draw Faces + Textures"][

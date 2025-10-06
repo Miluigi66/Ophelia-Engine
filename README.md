@@ -12,3 +12,6 @@ Process the engine goes through to render:
 
 
 (write on paper first easer to go through)
+
+
+Total faces is whats killing preformance 

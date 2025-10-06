@@ -116,19 +116,31 @@ class Object:
         self.update_bounding_boxs()
         print(f"Updated object: {self.name}")
     
-    def intersects_ray(self, ray_origin, ray_direction):
-        for vertices, bounding_box in self.split_objects_each_faces:
+    def intersects_ray(self, ray_origin, ray_direction, legnth):
+        for _, bounding_box in self.split_objects_each_faces:
             (min_x, max_x), (min_y, max_y), (min_z, max_z) = bounding_box
-            if (min_x <= ray_origin[0] <= max_x and
-                min_y <= ray_origin[1] <= max_y and
-                min_z <= ray_origin[2] <= max_z):
-                return True
+            ray_x, ray_y, ray_z = ray_origin
+            ray_rot_x, _, ray_rot_z = ray_direction
+            for i in range(0, legnth, .1):
+                if ray_rot_x >= 0:
+                    ray_x += i * ray_rot_x
+                else:
+                    ray_x -= i * abs(ray_rot_x)
+                if ray_rot_z >= 0:
+                    ray_z += i * ray_rot_z
+                else:
+                    ray_z -= i * abs(ray_rot_z)
+                if (min_x <= ray_x <= max_x and
+                    min_y <= ray_y <= max_y and
+                    min_z <= ray_z <= max_z):
+                    return True
         return False
     
     def color_change(self, color):
         for i in range(len(self.faces)):
             self.faces[i] = (self.faces[i][0], color)
         self.update_bounding_boxs()
+        print(f"Changed color of {self.name} to {color}")
     
 threeDModles = {
     'square': {
@@ -182,8 +194,8 @@ threeDModles = {
         'general_color': WHITE
     },
     'gen_modle': {
-        'type': 'ob:genmodle',
-        'object_class': Object(generate_model_after, 'hills', 'ob:gnmodle'),
+        'type': 'ob:terrain',
+        'object_class': Object(generate_model_after, 'hills', 'ob:terrain'),
         'render': False,
         'move': True,
         'collision': True,
