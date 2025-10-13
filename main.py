@@ -7,6 +7,10 @@ import time
 import cProfile
 import os
 
+from pygame.locals import *
+from OpenGL.GL import *
+from OpenGL.GLUT import *
+
 # models
 print("Importing models.... (Might take a while)")
 from total_modles.model import MODLES
@@ -29,4 +33,6 @@ def main():
 if __name__ == "__main__":
     #cProfile.run("main()")
     main()
-    
+
+# DO THIS IF YOU GET ERRORS ABOUT OPENGL
+# pip install PyOpenGL PyOpenGL_accelerate 

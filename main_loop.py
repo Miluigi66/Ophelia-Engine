@@ -1,3 +1,4 @@
+#from pygame.locals import OPENGL, DOUBLEBUF
 from main import pygame, sys, math, time, camera
 from core_vars import WIDTH, HEIGHT, BLACK, WHITE
 import  main_functions_math
@@ -8,6 +9,7 @@ pygame.init()
 
 # The screen
 screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.RESIZABLE, pygame.SCALED)
+#screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.RESIZABLE | pygame.HWSURFACE | pygame.DOUBLEBUF | pygame.OPENGL)
 pygame.display.set_caption("Ophelia Engine")
 #TRY THIS MAYBE to make icon :)
 #pygame.display.set_icon(pygame.image.load(os.path.join("total_modles", "icon.png")))
