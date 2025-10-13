@@ -50,8 +50,8 @@ def main_loop():
         keys = pygame.key.get_pressed()
         cam.update(keys)
         
-        """if clock % 2 == 0:
-            main_functions_math.calculate_position(DICT['mountains2']['BOB'], 0, 0, .1, 0, 0, 0)"""
+        """if clock.get_time() % 2 == 0:
+            main_functions_math.calculate_position(threeDModles['square']['object_class'], 1, 0, 0, .1, 0, 0)"""
         
         """for obj_name, obj in DICT.items():
             cam.check_collision_with_camera(obj['object_class'])"""
@@ -74,12 +74,12 @@ def main_loop():
         func_start_time = time.time()
         transformed_vertices = cam.transform(all_vertices)
         transform_time = time.time() - func_start_time
-        
+
         # Sort faces by dot product with camera's front vector
         func_start_time = time.time()
         sorted_faces = main_functions_math.sort_high_to_low(transformed_vertices, all_faces)
         sort_time = time.time() - func_start_time
-        
+    
         # Calculate aspect ratio
         aspect_ratio = pygame.display.get_surface().get_width() / pygame.display.get_surface().get_height()
 
@@ -110,7 +110,7 @@ def main_loop():
             [get_all_faces_time, transform_time, sort_time, draw_faces_time].index(max_time)
         ]
         metrics.append((f"Bottleneck: {bottleneck} ({max_time:.4f} s)", 0, 210))
-        
+
         for text, x, y in metrics:
             surface = font_small.render(text, False, WHITE)
             screen.blit(surface, (x, y))
@@ -127,4 +127,4 @@ def main_loop():
         # Update display
         #pygame.display.flip()
         pygame.display.update()
-        clock.tick(60)
+        clock.tick(60)  # Limit to 60 FPS

@@ -84,12 +84,30 @@ class Cam:
         if key[pygame.K_ESCAPE]:
             pygame.quit()
             sys.exit()  # Quits Game
-        if key[pygame.K_o]:
-            tp_x = int(input("Enter x: "))
-            tp_y = int(input("Enter y: "))
-            tp_z = int(input("Enter z: "))
-            self.pos = [tp_x, tp_y, tp_z]
-            
+
+        # Commands
+        if key[pygame.K_SLASH]:
+            print("Type Commands Here (start with /):")
+            pygame.mouse.set_visible(1)
+            pygame.event.set_grab(0)
+            command = input()
+            if command.startswith("/tp"):
+                command = command.split()
+                if len(command) == 3:
+                    if command[1] == "player" or command[1] == "p":
+                        _, _, target_player = command
+                        if target_player in threeDModles:
+                            self.pos = list(threeDModles[target_player]['object_class'].pivot)
+                    elif command[1] in threeDModles:
+                        _, target1, target2 = command
+                        if target2 in threeDModles:
+                            threeDModles[target1]['object_class'].pivot = list(threeDModles[target2]['object_class'].pivot)
+                elif len(command) == 4:
+                    _, tp_x, tp_y, tp_z = command
+                    self.pos = [int(tp_x), int(tp_y), int(tp_z)]
+            pygame.mouse.set_visible(0)
+            pygame.event.set_grab(1)
+
     def check_collision_with_camera(self, obj):
         (min_x1, max_x1), (min_y1, max_y1), (min_z1, max_z1) = self.hitbox
         (min_x2, max_x2), (min_y2, max_y2), (min_z2, max_z2) = obj.get_bounding_box()
